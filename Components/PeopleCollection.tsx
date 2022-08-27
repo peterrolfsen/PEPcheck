@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import PersonCard from './PersonCard';
 import People from '../people.json';
 import { orderBy } from 'lodash';
+import StaccLogo from '../stacc-logo.png';
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 100px;
+  padding: 150px 0px;
 `;
 const PageWrapper = styled.div`
-  width: 80%;
+  width: 50%;
   padding: 40px 0;
 `;
 const Header = styled.div`
@@ -18,9 +19,10 @@ const Header = styled.div`
   background-color: white;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 20px;
   width: 100%;
-  padding: 50px;
+  padding: 50px 0px;
   border-bottom: 1px solid gray;
   box-shadow: 1px 5px 20px gray;
   z-index: 10000;
@@ -28,7 +30,7 @@ const Header = styled.div`
 const SearchBar = styled.input`
   border-radius: 5px;
   padding: 10px;
-  width: 40%;
+  width: 50%;
 `;
 
 const StyledSelect = styled.select`
@@ -40,27 +42,35 @@ const StyledSelect = styled.select`
   border-radius: 5px;
   font-size: 16px;
 `;
-
+const Logo = styled.img`
+  height: 50px;
+`;
 export const PeopleCollection = () => {
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState(People);
   const [sort, setSort] = useState<any>();
+
+  //søkefunksjon
   const search = (e: any) => {
+    //Tar inn et nøkkelord i søkefeltet
     const keyword = e.target.value;
     if (keyword !== '') {
+      //filtrer på navnene til personene i listeb om det som skrives i søkefeltet matcher
       const results = People?.filter((person) => {
         return person.name
           .toLocaleLowerCase()
           .startsWith(keyword.toLowerCase());
       });
-
+      //setter resultatet av søket til å være searchResult
       setSearchResult(results);
     } else {
       setSearchResult(People);
     }
     setQuery(keyword);
   };
-
+  //Finner alle personene som er i listen searchResult.
+  //Sender inn props til PersonCard komponenten
+  //Sorterer også listen alfabetisk
   const sortedPeople = orderBy(searchResult, 'name', sort).map((person, i) => {
     return (
       <PersonCard
@@ -76,6 +86,8 @@ export const PeopleCollection = () => {
         dataset={person.dataset}
         first_seen={person.first_seen}
         last_seen={person.last_seen}
+        addresses={person.addresses}
+        phones={person.phones}
       ></PersonCard>
     );
   });
@@ -83,6 +95,7 @@ export const PeopleCollection = () => {
   return (
     <>
       <Header>
+        <Logo src={StaccLogo} alt='stacc' />
         <SearchBar
           type='text'
           placeholder='Søk på navn'

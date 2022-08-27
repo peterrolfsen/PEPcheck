@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
 import styled from 'styled-components';
+import ReactCountryFlag from 'react-country-flag';
+
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const HeaderRightSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 
 const Wrapper = styled.div`
@@ -12,8 +19,8 @@ const Wrapper = styled.div`
   overflow: hidden;
   padding: 20px 40px;
   margin: 40px 0px;
-  height: 250px;
-  border-radius: 5px;
+  min-height: 250px;
+  border-radius: 20px;
   box-shadow: 3px 3px whitesmoke;
   transition-duration: 0.5s;
   &:hover {
@@ -22,20 +29,38 @@ const Wrapper = styled.div`
 `;
 
 const StyledName = styled.h2`
-  color: #454545;
+  color: #696967;
+  font-size: 35px;
 `;
-const StyledBirth = styled.p``;
-const StyledId = styled.p``;
+const StyledBirth = styled.p`
+  color: gray;
+  margin: 0;
+`;
 const StyledProp = styled.p`
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid grey;
+  width: 60%;
   span {
     font-weight: 700;
   }
+`;
+
+const StyledCountry = styled.div`
+  gap: 10px;
+  display: flex;
+  align-items: center;
 `;
 const StyledEmail = styled.p`
   color: gray;
   font-size: 12px;
 `;
+
+const InfoBlock = styled.div``;
+
+const InfoBody = styled.div`
+  display: grid;
+  grid-template-columns: 50% 50%;
+`;
+
 interface PersonProps {
   name: string;
   id: string;
@@ -50,63 +75,104 @@ interface PersonProps {
   dataset?: string;
   last_seen?: string;
   first_seen?: string;
+  addresses?: string;
 }
 
-export const PersonCard = ({ ...props }: PersonProps) => {
+export const PersonCard = ({
+  name,
+  id,
+  schema,
+  aliases,
+  birth_date,
+  countries,
+  identifiers,
+  sanctions,
+  phones,
+  emails,
+  dataset,
+  last_seen,
+  first_seen,
+  addresses,
+}: PersonProps) => {
+  const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+  //konverterer regionskoden med navnet til landet
+  function convertCountryCode(s: string) {
+    try {
+      return regionNames.of(s.toUpperCase());
+    } catch (e) {
+      if (e instanceof RangeError) {
+        //handle RangeError
+      }
+    }
+  }
   return (
     <Wrapper>
       <Header>
-        <StyledName>{props.name}</StyledName>
-        {props.birth_date && (
-          <StyledBirth>
-            <span>Født: </span>
-            {props.birth_date.replaceAll('-', '.')}
-          </StyledBirth>
-        )}
+        <div>
+          <StyledName>{name}</StyledName>
+          {emails && <StyledEmail>{emails}</StyledEmail>}
+        </div>
+        <HeaderRightSide>
+          {birth_date && (
+            <StyledBirth>
+              <span>Født: </span>
+              {birth_date.replaceAll('-', '.')}
+            </StyledBirth>
+          )}
+          {countries && (
+            <StyledCountry>
+              <>
+                <ReactCountryFlag countryCode={countries?.toUpperCase()} />
+                <p>{convertCountryCode(countries.toUpperCase())}</p>
+              </>
+            </StyledCountry>
+          )}
+        </HeaderRightSide>
       </Header>
-      {props.emails && <StyledEmail>{props.emails}</StyledEmail>}
+      <InfoBody>
+        <InfoBlock>
+          {aliases && (
+            <StyledProp>
+              <span>Aliaser:</span> {aliases}
+            </StyledProp>
+          )}
 
-      {props.aliases && (
-        <StyledProp>
-          <span>Aliaser:</span> {props.aliases}
-        </StyledProp>
-      )}
-
-      {props.dataset && (
-        <StyledProp>
-          <span> Tilhørlighet:</span> {props.dataset}
-        </StyledProp>
-      )}
-      {props.countries && (
-        <StyledProp>
-          <>
-            <span>Land: </span>
-            {props.countries}
-          </>
-        </StyledProp>
-      )}
-      {props.identifiers && (
-        <StyledProp>
-          <span>Identifisering:</span> {props.identifiers}
-        </StyledProp>
-      )}
-      {props.sanctions && (
-        <StyledProp>
-          <span>Sanksjoner:</span> {props.sanctions}
-        </StyledProp>
-      )}
-      {props.first_seen && (
-        <StyledProp>
-          <span>Først sett:</span>{' '}
-          {props.first_seen.replaceAll('-', '.').slice(0, -3)}
-        </StyledProp>
-      )}
-      {props.last_seen && (
-        <StyledProp>
-          <span>Sist sett:</span>{' '}
-          {props.last_seen.replaceAll('-', '.').slice(0, -3)}
-        </StyledProp>
-      )}
+          {dataset && (
+            <StyledProp>
+              <span> Tilhørlighet:</span> {dataset.replaceAll(';', ', ')}
+            </StyledProp>
+          )}
+          {addresses && (
+            <StyledProp>
+              <span> Addresse:</span> {addresses}
+            </StyledProp>
+          )}
+        </InfoBlock>
+        <InfoBlock>
+          {identifiers && (
+            <StyledProp>
+              <span>Identifisering:</span> {identifiers}
+            </StyledProp>
+          )}
+          {sanctions && (
+            <StyledProp>
+              <span>Sanksjoner:</span> {sanctions}
+            </StyledProp>
+          )}
+          {first_seen && (
+            <StyledProp>
+              <span>Først sett:</span>{' '}
+              {first_seen.replaceAll('-', '.').slice(0, -3)}
+            </StyledProp>
+          )}
+          {last_seen && (
+            <StyledProp>
+              <span>Sist sett:</span>{' '}
+              {last_seen.replaceAll('-', '.').slice(0, -3)}
+            </StyledProp>
+          )}
+        </InfoBlock>
+      </InfoBody>
     </Wrapper>
   );
 };
