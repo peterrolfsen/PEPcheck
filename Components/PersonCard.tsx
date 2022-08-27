@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import ReactCountryFlag from 'react-country-flag';
-
+import { convertCountryCode } from './PeopleCollection';
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -94,17 +94,6 @@ export const PersonCard = ({
   first_seen,
   addresses,
 }: PersonProps) => {
-  const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
-  //konverterer regionskoden med navnet til landet
-  function convertCountryCode(s: string) {
-    try {
-      return regionNames.of(s.toUpperCase());
-    } catch (e) {
-      if (e instanceof RangeError) {
-        //handle RangeError
-      }
-    }
-  }
   return (
     <Wrapper>
       <Header>

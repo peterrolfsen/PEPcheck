@@ -45,6 +45,19 @@ const StyledSelect = styled.select`
 const Logo = styled.img`
   height: 50px;
 `;
+
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+//konverterer regionskoden med navnet til landet
+export function convertCountryCode(s: string) {
+  try {
+    return regionNames.of(s.toUpperCase());
+  } catch (e) {
+    if (e instanceof RangeError) {
+      //handle RangeError
+    }
+  }
+}
+
 export const PeopleCollection = () => {
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState(People);
@@ -57,9 +70,13 @@ export const PeopleCollection = () => {
     if (keyword !== '') {
       //filtrer på navnene til personene i listeb om det som skrives i søkefeltet matcher
       const results = People?.filter((person) => {
-        return person.name
-          .toLocaleLowerCase()
-          .startsWith(keyword.toLowerCase());
+        let country;
+        person.countries && (country = convertCountryCode(person.countries));
+
+        return (
+          person.name.toLocaleLowerCase().startsWith(keyword.toLowerCase()) ||
+          country?.toLocaleLowerCase().startsWith(keyword.toLowerCase())
+        );
       });
       //setter resultatet av søket til å være searchResult
       setSearchResult(results);
@@ -71,7 +88,7 @@ export const PeopleCollection = () => {
   //Finner alle personene som er i listen searchResult.
   //Sender inn props til PersonCard komponenten
   //Sorterer også listen alfabetisk
-  const sortedPeople = orderBy(searchResult, 'name', sort).map((person, i) => {
+  const sortedPeople = orderBy(searchResult, 'name', sort).map((person) => {
     return (
       <PersonCard
         name={person.name}
@@ -98,7 +115,7 @@ export const PeopleCollection = () => {
         <Logo src={StaccLogo} alt='stacc' />
         <SearchBar
           type='text'
-          placeholder='Søk på navn'
+          placeholder='Søk på navn eller land'
           value={query}
           onChange={search}
         />
