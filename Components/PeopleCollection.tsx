@@ -12,7 +12,6 @@ const Wrapper = styled.div`
 `;
 const PageWrapper = styled.div`
   width: 50%;
-  padding: 40px 0;
 `;
 const Header = styled.div`
   position: fixed;

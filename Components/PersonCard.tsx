@@ -5,6 +5,10 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+  }
 `;
 
 const HeaderRightSide = styled.div`
@@ -31,6 +35,10 @@ const Wrapper = styled.div`
 const StyledName = styled.h2`
   color: #696967;
   font-size: 35px;
+  @media (max-width: 768px) {
+    font-size: 25px;
+    margin: 0;
+  }
 `;
 const StyledBirth = styled.p`
   color: gray;
@@ -41,6 +49,10 @@ const StyledProp = styled.p`
   width: 60%;
   span {
     font-weight: 700;
+  }
+  @media (max-width: 768px) {
+    font-size: 15px;
+    width: 100%;
   }
 `;
 
@@ -59,6 +71,9 @@ const InfoBlock = styled.div``;
 const InfoBody = styled.div`
   display: grid;
   grid-template-columns: 50% 50%;
+  @media (max-width: 768px) {
+    grid-template-columns: 100%;
+  }
 `;
 
 interface PersonProps {
