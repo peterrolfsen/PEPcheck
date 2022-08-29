@@ -61,7 +61,7 @@ const StyledCountry = styled.div`
   display: flex;
   align-items: center;
 `;
-const StyledEmail = styled.p`
+const StyledContact = styled.p`
   color: gray;
   font-size: 12px;
 `;
@@ -96,7 +96,6 @@ interface PersonProps {
 export const PersonCard = ({
   name,
   id,
-  schema,
   aliases,
   birth_date,
   countries,
@@ -114,7 +113,8 @@ export const PersonCard = ({
       <Header>
         <div>
           <StyledName>{name}</StyledName>
-          {emails && <StyledEmail>{emails}</StyledEmail>}
+          {emails && <StyledContact>{emails}</StyledContact>}
+          {phones && <StyledContact>{phones}</StyledContact>}
         </div>
         <HeaderRightSide>
           {birth_date && (
@@ -149,6 +149,11 @@ export const PersonCard = ({
           {addresses && (
             <StyledProp>
               <span> Addresse:</span> {addresses}
+            </StyledProp>
+          )}
+          {id && (
+            <StyledProp>
+              <span>ID:</span> {id}
             </StyledProp>
           )}
         </InfoBlock>

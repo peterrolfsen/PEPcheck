@@ -74,7 +74,8 @@ export const PeopleCollection = () => {
 
         return (
           person.name.toLocaleLowerCase().startsWith(keyword.toLowerCase()) ||
-          country?.toLocaleLowerCase().startsWith(keyword.toLowerCase())
+          country?.toLocaleLowerCase().startsWith(keyword.toLowerCase()) ||
+          person.id.toLocaleLowerCase().startsWith(keyword.toLowerCase())
         );
       });
       //setter resultatet av søket til å være searchResult
@@ -87,9 +88,10 @@ export const PeopleCollection = () => {
   //Finner alle personene som er i listen searchResult.
   //Sender inn props til PersonCard komponenten
   //Sorterer også listen alfabetisk
-  const sortedPeople = orderBy(searchResult, 'name', sort).map((person) => {
+  const sortedPeople = orderBy(searchResult, 'name', sort).map((person, i) => {
     return (
       <PersonCard
+        key={i}
         name={person.name}
         id={person.id}
         aliases={person.aliases}
